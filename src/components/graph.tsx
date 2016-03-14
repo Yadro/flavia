@@ -10,31 +10,27 @@ let func = (alpha, betta, eps, gamma) => {
     }
 };
 
-let bessel = (q, n, delta, y ) => {
-    let deltaTwo = delta(2 * n);
-    let deltaTwoPlus = delta(2 * n);
-    let qMul = calc_q(q, n);
-    let yMinus = y(-n);
-    let yMinusPlus = y(-n + 1);
+let bessel = (t, n, delta) => {
+    let qMul = calc_t(t, n);
     return (
-        (            qMul / factorial(2 * n)      * (deltaTwo * yMinus + deltaTwo * yMinusPlus) / 2) +
-        ((q - 1/2) * qMul / factorial(2 * n + 1)) *  deltaTwoPlus * yMinus
+        (            qMul / factorial(2 * n)      * (delta(2 * n, -n) + delta(2 * n, -n + 1)) / 2) +
+        ((t - 1/2) * qMul / factorial(2 * n + 1)) *  delta(2 * n + 1, -n)
     );
 };
 
 /**
- * Return q(q-1)(q+1)...(q-n-1)(q+n-1)(q-n)(q + n - 1)
- * @param q
+ * Return t(t-1)(t+1)...(t-n-1)(t+n-1)(t-n)(t + n - 1)
+ * @param t
  * @param n
  * @returns number
  */
-let calc_q = (q: number, n: number) => {
-    let c = q;
+let calc_t = (t: number, n: number) => {
+    let c = t;
     for (let i = 1; i < n; i++) {
-        c *= q - i;
-        c *= q + i;
+        c *= t - i;
+        c *= t + i;
     }
-    return c * (q - n) * (q + n - 1);
+    return c * (t - n) * (t + n - 1);
 };
 
 let factorial = (n) => {
