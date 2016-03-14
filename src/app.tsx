@@ -5,16 +5,17 @@ import * as ReactDOM from 'react-dom';
 //import {InputMatrix} from 'components/input_matrix'
 import {Matrix} from 'helper/matrix';
 //import Fraction = require('../node_modules/fraction.js/fraction');
-//import {Graph} from './components/graph';
+import {Graph} from './components/graph';
+import {TableDiff} from  './helper/TableDiff';
 
 //import {Fraction} from "helper/fraction.js.ts";
 
 let test = [
-    [0,0,0],
-    [0,1,3],
-    [1,2,2],
-    [7,2,10],
-    [1,1,1],
+    [0, 0, 0],
+    [0, 1, 3],
+    [1, 2, 2],
+    [7, 2, 10],
+    [1, 1, 1],
 ];
 
 interface AppState {
@@ -41,16 +42,15 @@ class App extends React.Component<any, AppState> {
     }
 
     render() {
-        /*
-         <h1>Just apply Gauss it</h1>
-         <InputMatrix matrix={this.state.matrix} callback={this.callback.bind(this)}/>
-        */
         return (
             <div>
-                <h1>123456789</h1>
+                <Graph />
             </div>
         )
     }
 }
 
 ReactDOM.render(<App/>, document.querySelector('.react'));
+
+let table = new TableDiff((e) => Math.cos(Math.tan(e)) + Math.sin(e), [0, 5], 1, 8);
+table.toString();
