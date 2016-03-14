@@ -13,8 +13,8 @@ let func = (alpha, betta, eps, gamma) => {
 let bessel = (t, n, delta) => {
     let qMul = calc_t(t, n);
     return (
-        (            qMul / factorial(2 * n)      * (delta(2 * n, -n) + delta(2 * n, -n + 1)) / 2) +
-        ((t - 1/2) * qMul / factorial(2 * n + 1)) *  delta(2 * n + 1, -n)
+        (            qMul / factorial(2 * n)      * (delta(2 * n, -n)     + delta(2 * n, -n + 1)) / 2) +
+        ((t - 1/2) * qMul / factorial(2 * n + 1)) * (delta(2 * n + 1, -n) + delta(2 * n + 1, -n + 1)) / 2
     );
 };
 
@@ -61,7 +61,6 @@ export class Graph extends React.Component<any, any> {
     render() {
         return (
             <div>
-                <h1>Snap svg</h1>
                 <svg id="svg" width="800px" height="600px"/>
             </div>
         )

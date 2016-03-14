@@ -1,3 +1,4 @@
+
 /**
  * Таблица конечных разностей вперёд
  */
@@ -5,19 +6,21 @@ export class TableDiff {
     x = [];
     y = [];
     delta: number[][] = [];
+    start: number;
 
     /**
-     *
+     * Конструктор
      * @param func функция
-     * @param size пределы
+     * @param start пределы
      * @param h шаг
      * @param n максималный порядок конечн разности
      */
-    constructor(func, size: number[], h, n) {
+    constructor(func: Function, start, h, n) {
         if (h <= 0) {
             throw new Error('h <= 0');
         }
-        for (let x = size[0]; x < size[1]; x+=h) {
+        this.start = start;
+        for (let x = start; x <= -start; x+=h) {
             this.x.push(x);
             this.y.push(func(x));
         }
@@ -46,7 +49,7 @@ export class TableDiff {
      * @returns {number}
      */
     getDelta(k, p) {
-        return this.delta[k-1][p];
+        return this.delta[-this.start + k][p];
     }
 
     toString() {
