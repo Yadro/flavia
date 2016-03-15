@@ -4,18 +4,39 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import {Graph} from './components/graph';
 import {TableDiff} from  './helper/tableDiff';
+import {InputC} from './components/input';
 
 
-class App extends React.Component<any, any> {
+interface AppState {
+    params;
+}
+
+class App extends React.Component<any, AppState> {
 
     constructor(props) {
         super(props);
+        this.state = {
+            params: {
+                'alpha': 1,
+                'betta': 1,
+                'eps': 1,
+                'gamma': 1
+            }
+        }
+    }
+
+    changeParam(name, value) {
+        let params = this.state.params;
+        params[name] = value;
+
+        this.setState({params});
     }
 
     render() {
         return (
             <div>
-                <Graph />
+                <InputC labels={['alpha', 'betta', 'eps', 'gamma']} callback={this.changeParam.bind(this)}/>
+                <Graph params={this.state.params}/>
             </div>
         )
     }
@@ -23,5 +44,3 @@ class App extends React.Component<any, any> {
 
 ReactDOM.render(<App/>, document.querySelector('.react'));
 
-let table = new TableDiff((e) => Math.cos(Math.tan(e)) + Math.sin(e), -2, 1, 8);
-table.toString();

@@ -158,4 +158,10 @@ export class GraphPolynom {
             last[1] = y;
         }
     }
+
+    updateGraphics(func) {
+        this.func = func;
+        this.paper.clear();
+        this.drawGraphics();
+    }
 }

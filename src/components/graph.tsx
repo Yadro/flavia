@@ -4,12 +4,23 @@ import * as React from 'react';
 import * as Snap from '../../node_modules/snapsvg/dist/snap.svg';
 import {GraphPolynom} from "../helper/graphic_polynom";
 
-let func = (alpha, betta, eps, gamma) => {
+function func(params) {
+    let alpha = params.alpha;
+    let betta = params.betta;
+    let eps = params.eps;
+    let gamma = params.gamma;
     return (x) => {
         return alpha * Math.cos(Math.tan(betta * x)) + eps * Math.sin(gamma * x);
     }
-};
+}
 
+/**
+ *
+ * @param t
+ * @param n узел интерполяции
+ * @param delta функция, возвращающая нужный элемент из таблицы разностей
+ * @returns {number}
+ */
 let bessel = (t, n, delta) => {
     let qMul = calc_t(t, n);
     return (
@@ -41,9 +52,13 @@ let factorial = (n) => {
     return c;
 };
 
-export class Graph extends React.Component<any, any> {
+interface GraphProps {
+    params;
+}
 
-    graph;
+export class Graph extends React.Component<GraphProps, any> {
+
+    graph: GraphPolynom;
 
     constructor(props) {
         super(props);
@@ -51,11 +66,11 @@ export class Graph extends React.Component<any, any> {
     }
 
     componentDidMount() {
-        this.graph = new GraphPolynom('#svg', func(1, 1, 1, 1));
+        this.graph = new GraphPolynom('#svg', func(this.props.params));
     }
 
     componentDidUpdate() {
-        this.graph();
+        this.graph.updateGraphics(func(this.props.params));
     }
 
     render() {
