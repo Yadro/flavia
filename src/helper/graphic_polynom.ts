@@ -28,12 +28,12 @@ export class GraphPolynom {
     size: number = 10;
     count: number = 10;
 
-    func;
+    func: Function[];
 
     extremum: number[] = [-10, 10, -10, 10, -10, 10];
     segment = 30;
 
-    constructor(id, func) {
+    constructor(id, func: Function[]) {
         this.paper = Snap(id || 'svg');
         this.func = func;
 
@@ -61,7 +61,9 @@ export class GraphPolynom {
         //this.drawAxis();
         //this.drawAxis(true);
 
-        this.drawGraphics();
+        func.forEach(f => {
+            this.drawGraphics(f);
+        });
     }
 
     /**
@@ -126,7 +128,7 @@ export class GraphPolynom {
     /**
      * Отрисовка графиков
      */
-    drawGraphics() {
+    drawGraphics(func) {
         let start = this.start,
             segment = this.segment,
             last = [0, 0];
@@ -136,7 +138,7 @@ export class GraphPolynom {
             coord[0] = last[0];
             coord[1] = last[1];
             let x = coord[2] = i;
-            let y = coord[3] = this.func(i);
+            let y = coord[3] = func(i);
 
             let sign = 1;
             coord = coord.map((e, i) => {
@@ -147,21 +149,28 @@ export class GraphPolynom {
             let line = this.paper.line(coord[0], coord[1], coord[2], coord[3])
                 .attr(this.lineStyle);
 
-            this.paper.line(coord[0], coord[1], coord[2], coord[3])
+            /*this.paper.line(coord[0], coord[1], coord[2], coord[3])
                 .attr(this.lineStyle2)
                 .hover((e) => {
                     line.attr({stroke: '#f00'});
                 }, (e) => {
                     line.attr(this.lineStyle);
-                });
+                });*/
             last[0] = x;
             last[1] = y;
         }
     }
 
-    updateGraphics(func) {
+    addGraphic(f: Function) {
+        this.func.push(f);
+        this.drawGraphics(f);
+    }
+
+    updateGraphics(func: Function[]) {
         this.func = func;
         this.paper.clear();
-        this.drawGraphics();
+        func.forEach(f => {
+            this.drawGraphics(f);
+        });
     }
 }

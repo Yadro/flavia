@@ -20,7 +20,8 @@ class App extends React.Component<any, AppState> {
                 'alpha': 1,
                 'betta': 1,
                 'eps': 1,
-                'gamma': 1
+                'gamma': 1,
+                n: 5,
             }
         }
     }
@@ -35,7 +36,7 @@ class App extends React.Component<any, AppState> {
     render() {
         return (
             <div>
-                <InputC labels={['alpha', 'betta', 'eps', 'gamma']} callback={this.changeParam.bind(this)}/>
+                <InputC labels={['alpha', 'betta', 'eps', 'gamma', 'n']} callback={this.changeParam.bind(this)}/>
                 <Graph params={this.state.params}/>
             </div>
         )
@@ -43,4 +44,5 @@ class App extends React.Component<any, AppState> {
 }
 
 ReactDOM.render(<App/>, document.querySelector('.react'));
+
 
