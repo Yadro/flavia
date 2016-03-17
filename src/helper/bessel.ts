@@ -1,7 +1,9 @@
 
 import {TableDiff} from "./tableDiff";
 
-
+/**
+ * Bessel polynomial interpolation
+ */
 export class Bessel {
     n: number;
     table: TableDiff;
@@ -10,14 +12,14 @@ export class Bessel {
     constructor(func: (x) => number, h: number, n: number) {
         this.n = n;
         this.table = new TableDiff(func, 0, h, 2 * n + 2);
-        this.table.toString();
+        //this.table.toString();
         this.delta = (k) => (this.table.getDelta(k, 0) + this.table.getDelta(k, 1)) / 2;
     }
 
-    bessel(): number {
+    bessel(x: number): number {
         let result = 0;
         for (var i = 0; i < this.n; i++) {
-            result += this.bessel_step(this.table.y[i], i, this.delta);
+            result += this.bessel_step(x, i, this.delta);
         }
         return result;
     }
@@ -29,7 +31,7 @@ export class Bessel {
      * @param delta функция, возвращающая нужный элемент из таблицы разностей
      * @returns {number}
      */
-    bessel_step(t: number, n: number, delta: (k) => number) {
+    bessel_step(t: number, n: number, delta: (k) => number): number {
         let qMul = Bessel.calc_t(t, n);
         return (
             (            qMul / Bessel.factorial(2 * n)      * (delta(2 * n)     + delta(2 * n)) / 2) +

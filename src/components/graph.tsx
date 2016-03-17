@@ -33,12 +33,14 @@ export class Graph extends React.Component<GraphProps, any> {
     componentDidMount() {
         let f = func(this.props.params);
         this.graph = new GraphPolynom('#svg', [f]);
-        let bessel = new Bessel(f, 1, 5);
-        console.log(bessel.bessel());
+        let bessel = new Bessel(f, 1, this.props.params.n);
+        this.graph.addGraphic((x) => bessel.bessel(x));
     }
 
     componentDidUpdate() {
-        this.graph.updateGraphics([func(this.props.params)]);
+        let f = func(this.props.params);
+        let bessel = new Bessel(f, 1, this.props.params.n);
+        this.graph.updateGraphics([f, (x) => bessel.bessel(x)]);
     }
 
     render() {
