@@ -4,6 +4,7 @@
   "description": "",
   "main": "gulpfile.js",
   "scripts": {
+    "build": "gulp",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -14,5 +15,15 @@
     "react-dom": "^0.14.7",
     "snapsvg": "^0.4.0",
     "tsd": "^0.6.5"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-typescript": "^2.12.1",
+    "react": "^0.14.7",
+    "react-dom": "^0.14.7",
+    "requirejs": "^2.2.0",
+    "snapsvg": "^0.4.0",
+    "typescript": "^1.8.9"
   }
 }
