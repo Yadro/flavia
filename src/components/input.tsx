@@ -13,7 +13,7 @@ export class InputC extends React.Component<InputCProps, any> {
     }
 
     onChange(name, e: KeyboardEvent) {
-        this.props.callback(name, e.target.value);
+        this.props.callback(name, +e.target.value);
     }
 
     createInput(name, value) {
