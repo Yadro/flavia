@@ -89,7 +89,7 @@ export class GraphPolynom {
     }
 
     /**
-     * Отрисовка оси координат
+     * Отрисовка осей координат
      */
     drawAxis() {
         let paper = this.paper,
@@ -106,7 +106,15 @@ export class GraphPolynom {
                 [this.sizeW.c, this.sizeW.d] :
                 [this.sizeW.a, this.sizeW.b];
 
+            let pass = GraphPolynom.getsize(this.sizeCell[k % 2]);
+
             for (let i = border[0]; i <= border[1]; i++) {
+                if (pass && i % pass) {
+                    // пропускаем деления, если маленький масштаб
+                    continue;
+                }
+
+                // координаты делений на осях
                 let localX = k ? startX : startX + i * this.sizeCell[0];
                 let localY = k ? startY + i * this.sizeCell[1] : startY;
 
@@ -127,6 +135,37 @@ export class GraphPolynom {
                 }
             }
         }
+    }
+
+    /**
+     * Расчет количества отображаемых делений
+     * @param size
+     * @returns {number}
+     */
+    static getsize(size: number) {
+        let pass = 0;
+        if (size < 25) {
+            pass = 2;
+            if (size < 18) {
+                pass = 3;
+            }
+            if (size < 15) {
+                pass = 4;
+            }
+            if (size < 10) {
+                pass = 5;
+            }
+            if (size < 7) {
+                pass = 8;
+            }
+            if (size < 5) {
+                pass = 10;
+            }
+            if (size < 4) {
+                pass = 20;
+            }
+        }
+        return pass;
     }
 
     /**

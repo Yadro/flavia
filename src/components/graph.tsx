@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import * as Snap from '../../node_modules/snapsvg/dist/snap.svg';
-import {GraphPolynom} from "../helper/graphic_polynom";
+import {GraphPolynom} from "../helper/graph_polynom";
 import {TableDiff} from "../helper/tableDiff";
 import {Bessel} from "../helper/bessel";
 
