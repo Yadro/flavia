@@ -171,8 +171,10 @@ export class GraphPolynom {
     /**
      * Отрисовка графиков
      */
-    drawGraphics(func: (x) => number) {
-        let last = [0, 0];
+    drawGraphics(func) {
+        //let step = (this.sizeW.a + this.sizeW.b) / 800;
+
+        let last = [0,0];
 
         for (let i = this.sizeW.a; i < this.sizeW.b; i += .1) {
             let coord = [];
