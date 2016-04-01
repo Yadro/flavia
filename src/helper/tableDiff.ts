@@ -56,7 +56,6 @@ export class TableDiff {
             return this.delta[-this.start + k][p];
         }
         throw new Error('get delta error');
-        return 0;
     }
 
     /**
@@ -71,7 +70,7 @@ export class TableDiff {
         throw new Error(`get delta error for n = ${n}`);
     }
 
-    toString() {
+    print() {
         console.table({
             x: this.x,
             y: this.y,

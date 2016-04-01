@@ -40,7 +40,7 @@ export class Bessel {
         this.h = (params.b - params.a) / (2 * params.n + 2);
         console.log("h = " + this.h);
         this.table = new TableDiff(func, params.a, this.h, 2 * this.n + 2);
-        this.table.toString();
+        //this.table.print();
         this.delta = (k) => this.table.getFirstDelta(k);
     }
 

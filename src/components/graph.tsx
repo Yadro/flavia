@@ -17,6 +17,12 @@ function func(params) {
     }
 }
 
+/**
+ * ????
+ */
+function wtf(costjl) {
+    return costjl;
+}
 
 interface GraphProps {
     params: Params
@@ -32,15 +38,18 @@ export class Graph extends React.Component<GraphProps, any> {
 
     componentDidMount() {
         let f = func(this.props.params);
-        this.graph = new GraphPolynom('#svg', [f], this.props.params);
+        this.graph = new GraphPolynom('#svg', [{f: f}], this.props.params);
         let bessel = new Bessel(f, this.props.params);
-        this.graph.addGraphic((x) => bessel.bessel(x));
+        this.graph.addGraphic({f: (x) => bessel.bessel(x)});
     }
 
     componentDidUpdate() {
         let f = func(this.props.params);
         let bessel = new Bessel(f, this.props.params);
-        this.graph.updateGraphics([f, (x) => bessel.bessel(x)], this.props.params);
+        this.graph.updateGraphics([
+            {f: f},
+            {f: (x) => bessel.bessel(x), step: wtf(bessel.h)}
+        ], this.props.params);
     }
 
     render() {

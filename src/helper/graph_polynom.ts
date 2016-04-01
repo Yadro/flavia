@@ -3,7 +3,7 @@ import * as Snap from '../../node_modules/snapsvg/dist/snap.svg';
 
 
 interface FunctionContainer {
-    Function
+    f: Function;
     step?
 }
 
@@ -158,12 +158,14 @@ export class GraphPolynom {
     /**
      * Отрисовка графика
      */
-    drawGraphics(func, step?) {
+    drawGraphics(container: FunctionContainer) {
+        let func = container.f;
+
         //let step = (this.sizeW.a + this.sizeW.b) / 800;
         let {a, b} = this.sizeW;
         let last = [0,0];
-        let h = step ? step : (b - a) / this.sizeSvg[0];
-
+        let h = container.hasOwnProperty('step') ? container.step : (b - a) / this.sizeSvg[0];
+        //let h = (b - a) / this.sizeSvg[0];
         for (let i = a; i < b; i += h) {
             let coord = [];
             coord[0] = last[0];
@@ -200,12 +202,12 @@ export class GraphPolynom {
         }
     }
 
-    addGraphic(f: Function) {
+    addGraphic(f: FunctionContainer) {
         this.func.push(f);
         this.drawGraphics(f);
     }
 
-    updateGraphics(func: Function[], size) {
+    updateGraphics(func: FunctionContainer[], size) {
         this.func = func;
         this.sizeW = {
             a: size.a != void 0 ? size.a : -10,
