@@ -1,6 +1,6 @@
 
 /**
- * Таблица конечных разностей вперёд
+ * Таблица симметричных разностей
  */
 export class TableDiff {
     x = [];
@@ -20,13 +20,15 @@ export class TableDiff {
             throw new Error('h <= 0');
         }
         this.start = start;
-        for (let x = start; x <= start + n; x+=h) {
+        for (let i = 0; i <= n; i++) {
+            //let x = i;
+            let x = start + h * i; // ???
             this.x.push(x);
             this.y.push(func(x));
         }
-        let {y} = this;
 
-        for (let i = 0; i < start + n; i++) {
+        let {y} = this;
+        for (let i = 0; i < n; i++) {
             this.delta.push([]);
 
             if (i == 0) {
@@ -49,7 +51,24 @@ export class TableDiff {
      * @returns {number}
      */
     getDelta(k, p) {
-        return this.delta[-this.start + k][p];
+        console.log(`get delta ${k} ${-this.start + k}`);
+        if (typeof this.delta[-this.start + k] != "undefined") {
+            return this.delta[-this.start + k][p];
+        }
+        throw new Error('get delta error');
+        return 0;
+    }
+
+    /**
+     * Возвращает значение вида Δ^k*y_n
+     * k = 1/2
+     * @param n
+     */
+    getFirstDelta(n) {
+        if (typeof this.delta[n] != "undefined") {
+            return this.delta[n][1] - this.delta[n][0];
+        }
+        throw new Error(`get delta error for n = ${n}`);
     }
 
     toString() {

@@ -1,6 +1,12 @@
 ///<reference path="../../typings/main.d.ts"/>
 import * as Snap from '../../node_modules/snapsvg/dist/snap.svg';
 
+
+interface FunctionContainer {
+    Function
+    step?
+}
+
 export class GraphPolynom {
     lineStyle = {
         stroke: '#000',
@@ -34,12 +40,11 @@ export class GraphPolynom {
         d
     };
 
-    func: Function[];
+    func: FunctionContainer[];
 
-    extremum: number[] = [-10, 10, -10, 10, -10, 10];
-    segment = 30;
 
-    constructor(id, func: Function[], size) {
+
+    constructor(id, func: FunctionContainer[], size) {
         this.paper = Snap(id || 'svg');
         this.func = func;
         this.sizeW = size;
@@ -53,28 +58,10 @@ export class GraphPolynom {
         });
     }
 
+    /**
+     * Расчет размеров шага клетки и начала координат.
+     */
     calc() {
-        /*let extr;
-         this.extremum = extr = this.getExtremum();
-
-         // определяем размер сегмента
-         this.count = extr[5] - extr[4];
-         this.size = Math.min(this.sizeSvg[0], this.sizeSvg[1]) - this.padding;
-         this.segment = this.size / this.count;
-
-         // считаем начало координат
-         let x_min = extr[0],
-         x_max = extr[1],
-         y_min = extr[2],
-         y_max = extr[3];
-         let graphW = (x_max - x_min) * this.segment,
-         graphH = (y_max - y_min) * this.segment;
-
-         this.start = [
-         this.sizeSvg[0] / 2 - graphW / 2 - x_min * this.segment,
-         this.sizeSvg[1] / 2 - graphH / 2 + y_max * this.segment
-         ];*/
-
         // определяем размер сегмента по X и Y
         this.sizeCell = [
             (this.sizeSvg[0] - this.padding) / (-this.sizeW.a + this.sizeW.b),
@@ -169,14 +156,15 @@ export class GraphPolynom {
     }
 
     /**
-     * Отрисовка графиков
+     * Отрисовка графика
      */
-    drawGraphics(func) {
+    drawGraphics(func, step?) {
         //let step = (this.sizeW.a + this.sizeW.b) / 800;
-
+        let {a, b} = this.sizeW;
         let last = [0,0];
+        let h = step ? step : (b - a) / this.sizeSvg[0];
 
-        for (let i = this.sizeW.a; i < this.sizeW.b; i += .1) {
+        for (let i = a; i < b; i += h) {
             let coord = [];
             coord[0] = last[0];
             coord[1] = last[1];
@@ -187,6 +175,13 @@ export class GraphPolynom {
             coord = coord.map((p, i) => {
                 sign = (i % 2) ? -1 : 1; // invert axisY
                 return this.start[i % 2] + p * this.sizeCell[i % 2] * sign + this.padding / 2;
+            });
+
+            //console.log(i);
+            coord.forEach(p => {
+                if (isNaN(p)) {
+                    //debugger;
+                }
             });
 
             let line = this.paper.line(coord[0], coord[1], coord[2], coord[3])

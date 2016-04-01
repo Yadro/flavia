@@ -11,6 +11,18 @@ interface AppState {
     params;
 }
 
+export interface Params {
+    'alpha'
+    'betta'
+    'eps'
+    'gamma'
+    n
+    a;
+    b
+    c;
+    d
+}
+
 class App extends React.Component<any, AppState> {
 
     constructor(props) {

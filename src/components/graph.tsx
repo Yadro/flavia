@@ -5,6 +5,7 @@ import * as Snap from '../../node_modules/snapsvg/dist/snap.svg';
 import {GraphPolynom} from "../helper/graph_polynom";
 import {TableDiff} from "../helper/tableDiff";
 import {Bessel} from "../helper/bessel";
+import {Params} from '../app';
 
 function func(params) {
     let alpha = params.alpha;
@@ -18,7 +19,7 @@ function func(params) {
 
 
 interface GraphProps {
-    params;
+    params: Params
 }
 
 export class Graph extends React.Component<GraphProps, any> {
@@ -32,13 +33,13 @@ export class Graph extends React.Component<GraphProps, any> {
     componentDidMount() {
         let f = func(this.props.params);
         this.graph = new GraphPolynom('#svg', [f], this.props.params);
-        let bessel = new Bessel(f, 1, this.props.params.n);
+        let bessel = new Bessel(f, this.props.params);
         this.graph.addGraphic((x) => bessel.bessel(x));
     }
 
     componentDidUpdate() {
         let f = func(this.props.params);
-        let bessel = new Bessel(f, 1, this.props.params.n);
+        let bessel = new Bessel(f, this.props.params);
         this.graph.updateGraphics([f, (x) => bessel.bessel(x)], this.props.params);
     }
 

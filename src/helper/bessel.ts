@@ -1,43 +1,138 @@
 
 import {TableDiff} from "./tableDiff";
+import {Params} from '../app';
+
+interface Fraction {
+    n;
+    d;
+}
+
+interface BesselStep {
+    result: number;
+    last: BesselStepLast;
+}
+
+interface BesselStepLast {
+    begin: Fraction;
+    end: Fraction;
+}
 
 /**
  * Bessel polynomial interpolation
  */
 export class Bessel {
+    /** размер шага */
+    h: number;
+    /** число точек интерполяции */
     n: number;
+    /** таблица симметричных разностей */
     table: TableDiff;
+    a;
+    b;
+
+    /** @var Function функция, возвращающая нужный элемент из таблицы разностей */
     delta: (k) => number;
 
-    constructor(func: (x) => number, h: number, n: number) {
-        this.n = n;
-        this.table = new TableDiff(func, 0, h, 2 * n + 2);
-        //this.table.toString();
-        this.delta = (k) => (this.table.getDelta(k, 0) + this.table.getDelta(k, 1)) / 2;
+    constructor(func: (x) => number, params: Params) {
+        this.n = params.n;
+        this.a = params.a;
+        this.b = params.b;
+        this.h = (params.b - params.a) / (2 * params.n + 2);
+        console.log("h = " + this.h);
+        this.table = new TableDiff(func, params.a, this.h, 2 * this.n + 2);
+        this.table.toString();
+        this.delta = (k) => this.table.getFirstDelta(k);
     }
 
     bessel(x: number): number {
         let result = 0;
-        for (var i = 0; i < this.n; i++) {
-            result += this.bessel_step(x, i, this.delta);
+        let last = {
+            begin: 1,
+            end: 1
+        };
+        let step;
+
+        if (Math.abs(x) < 0.00001) {
+            console.log(x);
         }
+
+        //for (let i = this.a, b = this.b, num = 0; i < b; i += (this.b - this.a) / 1000, num++) {
+        for (let i = 0; i < this.n; i++) {
+            //console.log(i);
+            step = this.bessel_step(last, (x - this.a) / this.h, i, i);
+            result += step.result;
+            last = step.last;
+
+            /*if (Math.abs(i) < 0.0001) {
+                console.log(last.begin, last.end);
+            }*/
+        }
+
         return result;
     }
 
     /**
-     *
+     * begin =  t·(t−1)(t+1)·...·(t−(n−1))·(t+(n−1))·(t−n) / (2n)!
+     * end =    t·(t−1)(t+1)·...·(t−(n−1))·(t+(n−1))·(t−n)·(t−1/2) / (2n+1)!
+     * @param last
      * @param t
      * @param n узел интерполяции
-     * @param delta функция, возвращающая нужный элемент из таблицы разностей
-     * @returns {number}
+     * @param step
+     * @returns {Object}
      */
-    bessel_step(t: number, n: number, delta: (k) => number): number {
-        let qMul = Bessel.calc_t(t, n);
-        return (
-            (            qMul / Bessel.factorial(2 * n)      * (delta(2 * n)     + delta(2 * n)) / 2) +
-            ((t - 1/2) * qMul / Bessel.factorial(2 * n + 1)) * (delta(2 * n + 1) + delta(2 * n + 1)) / 2
-        );
+    bessel_step(last, t: number, n: number, step): BesselStep {
+        let num,
+            begin = last.begin,
+            end = last.end;
+
+        t = (t - this.a) / this.h;
+
+        if (step == 0) {
+            begin = 1;
+            end = t - 1 / 2;
+        } else if (step == 1) {
+            begin *= t * (t - 1);
+            end *= t * (t - 1);
+        } else {
+            num = (t - n) * (t + n);
+            begin *= num / begin * (2 * n);
+            end *= num / (2 * n + 1);
+        }
+
+        return {
+            result: begin * this.delta(2 * n) + end * this.delta(2 * n + 1),
+            last: {
+                begin,
+                end,
+            }
+        };
     }
+
+    /*bessel_step(last: BesselStepLast, t: number, n: number, step): BesselStep {
+     let num,
+     begin = last.begin,
+     end = last.end;
+
+     if (step == 0) {
+     begin = {n: 1, d: 1};
+     end =   {n: t - 1 / 2, d: 1};
+     } else if (step == 1) {
+     begin = {n: begin.n * t * (t - 1), d: 1};
+     end   = {n: end.n * t * (t - 1), d: 1};
+     } else {
+     num = (t - n) * (t + n);
+     begin = {n: begin.n * num, d: begin.d * (2 * n)};
+     end   = {n: end.n * num,   d: end.d * (2 * n + 1)};
+     }
+
+     return {
+     result: begin.n / begin.d * this.delta(2 * n) + end.n / end.d * this.delta(2 * n + 1),
+     last: {
+     begin,
+     end,
+     }
+     };
+     }*/
 
     /**
      * Return t(t-1)(t+1)...(t-n-1)(t+n-1)(t-n)(t + n - 1)
